@@ -27,7 +27,7 @@ export function SettingsPanel({ settings, onChange }: SettingsPanelProps) {
             checked={settings.soundEnabled}
             onChange={(event) => update("soundEnabled", event.target.checked)}
           />
-          Sonido suave
+          Voz y sonido suave
         </label>
         <label className="toggle-row">
           <input

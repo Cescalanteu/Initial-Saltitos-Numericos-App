@@ -17,7 +17,7 @@ import {
   validateStartSelection
 } from "./domain/problems";
 import { t } from "./i18n";
-import { playSoftChime } from "./sound";
+import { playSoftChime, speakNumber, speakSuccessEquation } from "./sound";
 import {
   appendAttemptLog,
   defaultSettings,
@@ -84,6 +84,7 @@ export default function App() {
   const [previousPhase, setPreviousPhase] = useState<Phase>("SETUP");
   const [confirmDone, setConfirmDone] = useState(false);
   const [demoActive, setDemoActive] = useState(false);
+  const [autoAdvanceEnabled] = useState(true);
 
   useEffect(() => {
     saveSettings(settings);
@@ -159,7 +160,16 @@ export default function App() {
 
   const completeIfNeeded = (nextState: ExerciseState, nextAttempt: AttemptLog | null) => {
     if (nextState.phase === "REVEAL_RESULT") {
-      playSoftChime(settings.soundEnabled);
+      if (nextState.problem) {
+        speakSuccessEquation(
+          settings.soundEnabled,
+          nextState.problem.a,
+          nextState.problem.b,
+          nextState.problem.result
+        );
+      } else {
+        playSoftChime(settings.soundEnabled);
+      }
       if (nextAttempt) {
         finishAttemptFrom(nextAttempt, true);
         setAttempt(null);
@@ -190,7 +200,7 @@ export default function App() {
       const nextState = selectStart(exercise, selectedNumber);
       setExercise(nextState);
       setHintNumber(shouldShowImmediateHint(settings) ? selectedNumber + 1 : null);
-      playSoftChime(settings.soundEnabled);
+      speakNumber(settings.soundEnabled, selectedNumber);
       return;
     }
 
@@ -274,6 +284,17 @@ export default function App() {
     return () => window.clearTimeout(timer);
   }, [demoActive, exercise, settings.reducedMotion]);
 
+  useEffect(() => {
+    if (!autoAdvanceEnabled || demoActive || confirmDone || exercise.phase !== "REVEAL_RESULT") return;
+
+    const delay = 10000;
+    const timer = window.setTimeout(() => {
+      startAutomatic();
+    }, delay);
+
+    return () => window.clearTimeout(timer);
+  }, [autoAdvanceEnabled, confirmDone, demoActive, exercise.phase, settings.reducedMotion]);
+
   if (!started) {
     return <StartScreen onStart={() => setStarted(true)} />;
   }
@@ -339,12 +360,17 @@ export default function App() {
                   </button>
                 )}
                 {exercise.phase === "REVEAL_RESULT" && (
-                  <ResultScreen
-                    problem={exercise.problem}
-                    onRepeat={repeatProblem}
-                    onNew={startAutomatic}
-                    onDone={() => setConfirmDone(true)}
-                  />
+                  <>
+                    <p className="auto-next-note" aria-live="polite">
+                      Nuevo ejercicio en unos segundos
+                    </p>
+                    <ResultScreen
+                      problem={exercise.problem}
+                      onRepeat={repeatProblem}
+                      onNew={startAutomatic}
+                      onDone={() => setConfirmDone(true)}
+                    />
+                  </>
                 )}
               </>
             ) : (

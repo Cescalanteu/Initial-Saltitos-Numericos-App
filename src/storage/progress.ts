@@ -6,7 +6,7 @@ const LOGS_KEY = "saltitos.progress.v1";
 export const defaultSettings: AppSettings = {
   language: "es",
   maxNumber: 10,
-  soundEnabled: false,
+  soundEnabled: true,
   animationsEnabled: true,
   reducedMotion: false,
   highContrast: false,

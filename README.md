@@ -22,6 +22,13 @@ npm run dev
 
 Luego abre la URL local que muestre Vite, normalmente `http://localhost:5173`.
 
+En Windows tambien puedes usar:
+
+- `run-local.bat`: abre la app solo en esta PC.
+- `run-local-ipad.bat`: abre la app en la red Wi-Fi para probarla desde el iPad.
+
+Para el iPad, la PC y el iPad deben estar en el mismo Wi-Fi. Deja la ventana `.bat` abierta mientras pruebas.
+
 ## Tests y build
 
 ```bash
@@ -67,7 +74,7 @@ Despues, en GitHub:
 - Botones grandes y navegables por teclado.
 - Instrucciones cortas, visuales y repetibles.
 - Sin temporizador obligatorio, rankings, castigos ni mensajes de fracaso.
-- Sonido apagado por defecto.
+- Voz de numeros y sonido suave configurables.
 - Configuraciones locales para reducir movimiento, alto contraste, modo calmado, animaciones y nivel de ayuda.
 - Barra AAC con `Ayuda`, `Pausa`, `Otra vez`, `Termine`, `Si` y `No`.
 
