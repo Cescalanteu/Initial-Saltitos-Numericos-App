@@ -15,9 +15,12 @@ const messages = {
 type MessageKey = keyof typeof messages;
 type Vars = Record<string, string | number>;
 
-export function t(key: MessageKey, vars: Vars = {}) {
-  return Object.entries(vars).reduce(
-    (text, [name, value]) => text.replaceAll(`{${name}}`, String(value)),
-    messages[key]
-  );
+export function t(key: MessageKey, vars: Vars = {}): string {
+  let text: string = messages[key];
+
+  for (const [name, value] of Object.entries(vars)) {
+    text = text.replaceAll(`{${name}}`, String(value));
+  }
+
+  return text;
 }
